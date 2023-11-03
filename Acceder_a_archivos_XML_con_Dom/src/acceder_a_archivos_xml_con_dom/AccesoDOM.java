@@ -8,6 +8,7 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -76,9 +77,68 @@ public class AccesoDOM {
                 //el array de String datos[] tiene los valores que necesitamos
                 System.out.println("==============================================");
                 System.out.println("   Libro");
-                System.out.println("\tTítulo: "+datos[0] + "\n\tAutor: " + datos[2] + "\n\tAño Publicación: " + datos[1]);
+                System.out.println("\tTítulo: " + datos[1] + "\n\tAutor: " + datos[2] + "\n\tAño Publicación: " + datos[0]);
                 System.out.println("==============================================");
             }
         }
     }
+
+    public int insertarLibroEnDOM(String titulo, String autor, String fecha) {
+        try {
+            System.out.println("Añadir libro al árbol DOM: " + titulo + "; " + autor + "; " + fecha);
+
+            // Crea los nodos y los añade al padre desde las hojas a la raíz
+            // Crea el nodo TITULO con el texto en medio
+            Node ntitulo = doc.createElement("Titulo");
+            Node ntitulo_text = doc.createTextNode(titulo);
+            ntitulo.appendChild(ntitulo_text);
+
+            // Crea el nodo AUTOR
+            Node nautor = doc.createElement("Autor");
+            Node nautor_text = doc.createTextNode(autor);
+            nautor.appendChild(nautor_text);
+
+            // Crea el nodo LIBRO con atributo y nodos Título y Autor
+            Node nLibro = doc.createElement("Libro");
+            ((Element) nLibro).setAttribute("publicado", fecha);
+            nLibro.appendChild(ntitulo);
+            nLibro.appendChild(nautor);
+
+            // Añade el nodo LIBRO a la raíz
+            nLibro.appendChild(doc.createTextNode("\n"));
+            Node raiz = doc.getFirstChild(); // También se puede usar doc.getChildNodes().item(0)
+            raiz.appendChild(nLibro);
+
+            System.out.println("Libro insertado en DOM.");
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+    }
+
+    public int deleteNode(String tit) {
+        System.out.println("Buscando el Libro " + tit + " para borrarlo");
+        try {
+            Node raiz = doc.getDocumentElement();
+            NodeList nl1 = doc.getElementsByTagName("Titulo");
+            Node n1;
+            for (int i = 0; i < nl1.getLength(); i++) {
+                n1 = nl1.item(i);
+                if (n1.getNodeType() == Node.ELEMENT_NODE) {
+                    if (n1.getChildNodes().item(0).getNodeValue().equals(tit)) {
+                        System.out.println("Borrando el nodo <Libro> con título " + tit);
+                        n1.getParentNode().getParentNode().removeChild(n1.getParentNode());
+                    }
+                }
+            }
+            System.out.println("Nodo borrado");
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }//fin clase

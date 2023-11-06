@@ -17,9 +17,14 @@ public class Acceder_a_archivos_XML_con_Dom {
                 AccesoDOM.recorreDOMyMuestra();//Leemos el DOM para ver los nodos
                 
                 System.out.println("\n\n\n\n");
-                AccesoDOM.deleteNode("El Misterio de la Isla Perdida");//Borrar el Libro
+                AccesoDOM.deleteNode("Don Quijote");//Borrar el Libro
                 System.out.println("\n\n\n\n");
                 AccesoDOM.recorreDOMyMuestra();//Leemos el DOM para ver los nodos
+                
+                System.out.println("\n\n\n\n");
+                AccesoDOM.guardarDOMcomoArchivo("NuevoLibros.xml");
+                System.out.println("\n\n\n\n");
+                
                
 	}
 }

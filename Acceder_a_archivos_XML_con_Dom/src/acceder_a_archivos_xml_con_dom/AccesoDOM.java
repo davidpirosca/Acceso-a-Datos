@@ -7,6 +7,12 @@ package acceder_a_archivos_xml_con_dom;
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -140,5 +146,23 @@ public class AccesoDOM {
             return -1;
         }
     }
+    
+    // Crea un nuevo archivo XML del DOM en memoria
+void guardarDOMcomoArchivo(String nuevoArchivo) {
+    try {
+        Source src = new DOMSource(doc); // Definimos el origen
+        StreamResult rst = new StreamResult(new File(nuevoArchivo)); // Definimos el resultado
+
+        // Declaramos el Transformer que tiene el método .transform() que necesitamos.
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        
+        // Opción para indentar el archivo
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(src, (javax.xml.transform.Result) rst);
+        System.out.println("Archivo creado del DOM con éxito\n");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
 }//fin clase

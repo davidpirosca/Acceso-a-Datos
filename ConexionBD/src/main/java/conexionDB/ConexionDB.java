@@ -232,7 +232,7 @@ public class ConexionDB {
         }
 
         do {
-            System.out.println("Dime el ID que Quieres Modificar ->");
+            System.out.print("Dime el ID que Quieres Modificar -> ");
 
             if (sc.hasNextInt()) {
                 id = sc.nextInt();
@@ -261,6 +261,7 @@ public class ConexionDB {
         int opcion;
         boolean salidaBucle = false;
         do {
+            System.out.println("===================================");
             System.out.println("¿Qué dato del videojuego deseas modificar?");
             System.out.println("1. Nombre");
             System.out.println("2. Género");
@@ -268,62 +269,112 @@ public class ConexionDB {
             System.out.println("4. Compañía");
             System.out.println("5. Precio");
             System.out.println("6. Salir");
+            System.out.println("===================================");
 
             opcion = sc.nextInt();
             sc.nextLine();
 
             switch (opcion) {
                 case 1:
+                    System.out.println("===================================");
+                    System.out.println(nuevoJuego.getNombre().toString());
+                    System.out.println("===================================");
                     System.out.println("Ingrese el nuevo nombre:");
                     String nuevoNombre = sc.nextLine();
                     nuevoJuego.setNombre(nuevoNombre);
                     break;
                 case 2:
+                    System.out.println("===================================");
+                    System.out.println(nuevoJuego.getGenero().toString());
+                    System.out.println("===================================");
                     System.out.println("Ingrese el nuevo género:");
                     String nuevoGenero = sc.nextLine();
                     nuevoJuego.setGenero(nuevoGenero);
                     break;
                 case 3:
-                    boolean validarFecha = true;
+                    System.out.println("===================================");
+                    System.out.println(nuevoJuego.getFechaLanzamiento().toString());
+                    System.out.println("===================================");
+                    boolean validarFecha = false;
+                    String nuevaFecha;
                     do {
                         System.out.println("Ingrese la nueva fecha de lanzamiento (yyyy-mm-dd):");
-                        String nuevaFecha = sc.nextLine();
+                        nuevaFecha = sc.nextLine();
                         try {
                             Date fechaLanzamiento = Date.valueOf(nuevaFecha);
+                            nuevoJuego.setFechaLanzamiento(fechaLanzamiento);
+                            validarFecha = true;
                         } catch (IllegalArgumentException e) {
-                            validarFecha = false;
+                            System.out.println("Formato de fecha inválido. Intente de nuevo.");
                         }
                     } while (!validarFecha);
                     break;
                 case 4:
+                    System.out.println("===================================");
+                    System.out.println(nuevoJuego.getCompañia().toString());
+                    System.out.println("===================================");
                     System.out.println("Ingrese la nueva compañía:");
                     String nuevaCompania = sc.nextLine();
                     nuevoJuego.setCompañia(nuevaCompania);
                     break;
                 case 5:
                     float precio = 0;
+                    boolean salidaBuclePrecio = false;
+                    System.out.println("===================================");
+                    System.out.println(String.valueOf(nuevoJuego.getPrecio()));
+                    System.out.println("===================================");
                     do {
                         System.out.println("Ingrese el nuevo precio:");
 
                         if (sc.hasNextFloat()) {
                             precio = sc.nextFloat();
-                            esValido = true;
+                            salidaBuclePrecio = true;
                         } else {
                             System.out.println("Ingresa un número válido. Gracias!");
                             sc.next();
                         }
-                    } while (!esValido);
+                    } while (!salidaBuclePrecio);
                     nuevoJuego.setPrecio(precio);
                     break;
 
                 case 6:
-                    System.out.println("Saliendo del programa.");
+                    System.out.println("Saliendo del programa!");
+                    salidaBucle = true;
                     break;
                 default:
                     System.out.println("Opción no válida");
                     break;
             }
-        } while (opcion != 6);
+        } while (!salidaBucle);
 
+        modificarRegistro(nuevoJuego);
+
+    }
+
+    private static void modificarRegistro(VideoJuego videojuegoModificado) {
+        DatosConexion datosConexion = new DatosConexion();
+        int filasAfectadas = 0;
+        final String QUERYUPDATE = "UPDATE videojuegos SET nombre = ?, genero = ?, fechaLanzamiento = ?, compañia = ?, precio = ? WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+            PreparedStatement pstmt = conn.prepareStatement(QUERYUPDATE);
+            pstmt.setString(1, videojuegoModificado.getNombre());
+            pstmt.setString(2, videojuegoModificado.getGenero());
+            pstmt.setDate(3, videojuegoModificado.getFechaLanzamiento());
+            pstmt.setString(4, videojuegoModificado.getCompañia());
+            pstmt.setFloat(5, videojuegoModificado.getPrecio());
+            pstmt.setString(6, videojuegoModificado.getId());
+
+            filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                System.out.println("Operación Exitosa!");
+            } else {
+                System.out.println("La Operación Ha Fracasado!");
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -95,6 +95,7 @@ public class VideoJuego {
             System.out.print("Dime la Fecha de Lanzamiento del Videojuego (Formato yyyy-mm-dd) -> ");
             fecha = sc.nextLine();
         } while (!validarFecha(fecha));
+        Date fechaLanzamiento = Date.valueOf(fecha);
 
         System.out.print("Dime la Compañia del Videojuego -> ");
         String compañia = sc.nextLine();
@@ -113,8 +114,6 @@ public class VideoJuego {
                 sc.next();
             }
         } while (!esValido);
-
-        Date fechaLanzamiento = Date.valueOf(fecha);
 
         VideoJuego videoJuego = new VideoJuego(null, nombre, genero, fechaLanzamiento, compañia, precio);
         return videoJuego;

@@ -18,18 +18,18 @@ public class Main {
             ResultSet rs = stmt.executeQuery(QUERY);
             while (rs.next()) {
                 System.out.println("ID: " + rs.getInt("id"));
-                System.out.println("Nombre: " + rs.getString("nombre"));
-                System.out.println("Genero: " + rs.getString("genero"));
-                System.out.println("Fecha Lanzamiento: " + rs.getDate("fecha_lanzamiento"));
-                System.out.println("Compañia: " + rs.getString("compañia"));
-                System.out.println("Precio: " + rs.getFloat("precio"));
+                System.out.println("Nombre: " + rs.getString("Nombre"));
+                System.out.println("Genero: " + rs.getString("Genero"));
+                System.out.println("Fecha Lanzamiento: " + rs.getDate("FechaLanzamiento"));
+                System.out.println("Compañia: " + rs.getString("Compañia"));
+                System.out.println("Precio: " + rs.getFloat("Precio"));
             }
             //CREAR UN VIDEOJUEGO SINCHAN
             //stmt.executeUpdate(QUERYINSERT);
             //BORRANDO EL VIDEOJUEGO SINCHAN
             stmt.executeUpdate(DELETE);
             
-            stmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

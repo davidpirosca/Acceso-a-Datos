@@ -2,13 +2,14 @@ package conexionDB;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
+import oracle.ucp.jdbc.PoolDataSourceFactory;
+import oracle.ucp.jdbc.PoolDataSource;
 
 public class ConexionDB {
 
@@ -28,22 +29,33 @@ public class ConexionDB {
     static final Date fecha = Date.valueOf("2023-12-29");
     static final String compañia = "Miguel Pardo";
     static final float precio = (float) 100.10;
+    
+    static final PoolDataSource pds = PoolDataSourceFactory.getPoolDataSource();
 
     public static void main(String[] args) {
-//        System.out.println("================================================");
-//        System.out.println("BUSCAR NOMBRE");
-//        System.out.println("================================================");
-//        if (buscaNombre(nombre)) {
-//            System.out.println("Nombre Encontrado!");
-//        } else {
-//            System.out.println("Nombre No Encontrado!");
-//        }
-//        System.out.println("================================================");
-//        System.out.println("================================================");
-//        System.out.println("NUEVO REGISTRO POR PARAMETRO");
-//        System.out.println("================================================");
-//        lanzaConsulta(QUERY);
-//        System.out.println("================================================");
+
+        try {
+            DatosConexion datosConexion = new DatosConexion();
+            pds.setConnectionFactoryClassName("oracle.jdbc.pool.OracleDataSource");
+            pds.setURL(datosConexion.getDB_URL_ORACLE());
+            pds.setUser(datosConexion.getUSER());
+            pds.setPassword(datosConexion.getPASS());
+            pds.setInitialPoolSize(5);
+
+            System.out.println("================================================");
+            System.out.println("BUSCAR NOMBRE");
+            System.out.println("================================================");
+            if (buscaNombre(nombre, pds)) {
+                System.out.println("Nombre Encontrado!");
+            } else {
+                System.out.println("Nombre No Encontrado!");
+            }
+//            System.out.println("================================================");
+//            System.out.println("================================================");
+//            System.out.println("NUEVO REGISTRO POR PARAMETRO");
+//            System.out.println("================================================");
+//            lanzaConsulta(QUERY, pds);
+//            System.out.println("================================================");
 //        System.out.println("NUEVO REGISTRO POR PARAMETRO");
 //        System.out.println("================================================");
 //        VideoJuego videoJuego = new VideoJuego(id, titulo, genero, fecha, compañia, precio);
@@ -66,19 +78,22 @@ public class ConexionDB {
 //        }
 //        System.out.println("================================================");
 //
-        System.out.println("================================================");
-        System.out.println("PRUEBA CON UPDATE");
-        modificarRegistro();
-        System.out.println("================================================");
+//        System.out.println("================================================");
+//        System.out.println("PRUEBA CON UPDATE");
+//        modificarRegistro(pds);
+//        System.out.println("================================================");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private static ArrayList<VideoJuego> todosLosDatos() {
-        DatosConexion datosConexion = new DatosConexion();
+    private static ArrayList<VideoJuego> todosLosDatos(PoolDataSource pds) {
         ArrayList<VideoJuego> videojuegos = new ArrayList<>();
         final String QUERY = "SELECT * FROM videojuegos";
         VideoJuego videojuegoNuevo;
 
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(QUERY);
             while (rs.next()) {
@@ -93,12 +108,11 @@ public class ConexionDB {
         return videojuegos;
     }
 
-    private static boolean buscaNombre(String nombre) {
-        DatosConexion datosConexion = new DatosConexion();
+    private static boolean buscaNombre(String nombre, PoolDataSource pds) {
+
         final String QUERY = "SELECT * FROM videojuegos WHERE Nombre = ?";
         boolean salida = false;
-
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(QUERY);
             pstmt.setString(1, nombre);
             ResultSet rs = pstmt.executeQuery();
@@ -116,11 +130,10 @@ public class ConexionDB {
         return salida;
     }
 
-    private static void lanzaConsulta(String consulta) {
+    private static void lanzaConsulta(String consulta, PoolDataSource pds) {
         if (consulta != null) {
-            DatosConexion datosConexion = new DatosConexion();
             String[] palabras = consulta.split(" ");
-            try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+            try (Connection conn = pds.getConnection()) {
                 Statement stmt = conn.createStatement();
                 if (palabras[0].equals("SELECT")) {
                     ResultSet rs = stmt.executeQuery(consulta);
@@ -150,12 +163,11 @@ public class ConexionDB {
         }
     }
 
-    private static void nuevoRegistro(VideoJuego nuevoVideoJuego) {
-        DatosConexion datosConexion = new DatosConexion();
+    private static void nuevoRegistro(VideoJuego nuevoVideoJuego, PoolDataSource pds) {
         int filasAfectadas = 0;
         final String QUERYINSERT = "INSERT INTO videojuegos VALUES (NULL, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(QUERYINSERT);
             pstmt.setString(1, nuevoVideoJuego.getNombre());
             pstmt.setString(2, nuevoVideoJuego.getGenero());
@@ -176,15 +188,14 @@ public class ConexionDB {
         }
     }
 
-    private static void nuevoRegistro() {
-        DatosConexion datosConexion = new DatosConexion();
+    private static void nuevoRegistro(PoolDataSource pds) {
         VideoJuego videoJuegoMetodo = new VideoJuego();
         VideoJuego nuevoVideoJuego;
         nuevoVideoJuego = videoJuegoMetodo.CrearVideoJuego();
         int filasAfectadas = 0;
         final String QUERYINSERT = "INSERT INTO videojuegos VALUES (NULL, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(QUERYINSERT);
             pstmt.setString(1, nuevoVideoJuego.getNombre());
             pstmt.setString(2, nuevoVideoJuego.getGenero());
@@ -205,14 +216,13 @@ public class ConexionDB {
         }
     }
 
-    private static boolean eliminarRegistro(String nombre) {
+    private static boolean eliminarRegistro(String nombre, PoolDataSource pds) {
         boolean salida = false;
-        DatosConexion datosConexion = new DatosConexion();
         VideoJuego videoJuego = new VideoJuego();
         final String DELETE = "DELETE FROM videojuegos WHERE nombre = ?";
         int filasAfectadas = 0;
 
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(DELETE);
             pstmt.setString(1, nombre);
             filasAfectadas = pstmt.executeUpdate();
@@ -227,10 +237,10 @@ public class ConexionDB {
         return salida;
     }
 
-    private static void modificarRegistro() {
+    private static void modificarRegistro(PoolDataSource pds) {
         Scanner sc = new Scanner(System.in);
         ArrayList<VideoJuego> videoJuegos = new ArrayList<>();
-        videoJuegos = todosLosDatos();
+        videoJuegos = todosLosDatos(pds);
         int id = 0;
         boolean esValido = false;
 
@@ -354,16 +364,16 @@ public class ConexionDB {
             }
         } while (!salidaBucle);
 
-        modificarRegistro(nuevoJuego);
+        modificarRegistro(nuevoJuego, pds);
 
     }
 
-    private static void modificarRegistro(VideoJuego videojuegoModificado) {
+    private static void modificarRegistro(VideoJuego videojuegoModificado, PoolDataSource pds) {
         DatosConexion datosConexion = new DatosConexion();
         int filasAfectadas = 0;
         final String QUERYUPDATE = "UPDATE videojuegos SET nombre = ?, genero = ?, fechaLanzamiento = ?, compañia = ?, precio = ? WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(datosConexion.getDB_URL(), datosConexion.getUSER(), datosConexion.getPASS())) {
+        try (Connection conn = pds.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(QUERYUPDATE);
             pstmt.setString(1, videojuegoModificado.getNombre());
             pstmt.setString(2, videojuegoModificado.getGenero());

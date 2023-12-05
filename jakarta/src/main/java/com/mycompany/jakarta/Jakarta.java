@@ -13,10 +13,16 @@ public class Jakarta {
 
     public static void main(String[] args) {
         try {
+            // Inicializa el contexto de JAXB para la clase 'Catalog'
             JAXBContext jaxbContext = JAXBContext.newInstance(Catalog.class);
+
+            // Crea un deserializador (Unmarshaller) para convertir XML a objetos Java
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            // Deserializa el archivo XML 'books.xml' en un objeto 'Catalog'
             Catalog catalogo = (Catalog) jaxbUnmarshaller.unmarshal(new File("books.xml"));
 
+            // Itera a través de cada libro en el catálogo e imprime sus detalles
             for (Book libro : catalogo.getBook()) {
                 System.out.println("ID: " + libro.getId());
                 System.out.println("Author: " + libro.getAuthor());
@@ -29,6 +35,7 @@ public class Jakarta {
             }
 
         } catch (JAXBException e) {
+            // Si ocurre un error durante la deserialización, imprime la traza de la excepción
             e.printStackTrace();
         }
     }

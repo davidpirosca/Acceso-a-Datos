@@ -13,10 +13,11 @@ public class Main {
     static final String DELETE = "DELETE FROM videojuegos WHERE nombre = 'SinChan'";
 
     public static void main(String[] args) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {//crea la conexion con los datos
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(QUERY);
-            while (rs.next()) {
+            ResultSet rs = stmt.executeQuery(QUERY);//ejercutar la consulta
+
+            while (rs.next()) {//recorre la informacion linea a linea
                 System.out.println("ID: " + rs.getInt("id"));
                 System.out.println("Nombre: " + rs.getString("Nombre"));
                 System.out.println("Genero: " + rs.getString("Genero"));
@@ -24,12 +25,11 @@ public class Main {
                 System.out.println("Compañia: " + rs.getString("Compañia"));
                 System.out.println("Precio: " + rs.getFloat("Precio"));
             }
-            //CREAR UN VIDEOJUEGO SINCHAN
-            //stmt.executeUpdate(QUERYINSERT);
-            //BORRANDO EL VIDEOJUEGO SINCHAN
+
+            //ejecutamos las query ya sea para un insert o delete que es diistinto del de mostrar
+            // stmt.executeUpdate(QUERY_INSERT);
             stmt.executeUpdate(DELETE);
-            
-            conn.close();
+            conn.close();//cerramos la conexion
         } catch (SQLException e) {
             e.printStackTrace();
         }

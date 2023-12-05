@@ -82,10 +82,12 @@ public class VideoJuego {
                 + "\nPrecio: " + this.precio + "\n";
     }
 
+    //metodo para crear un objeto de la propia clase con los datos pasados por teclado
     public VideoJuego CrearVideoJuego() {
         Scanner sc = new Scanner(System.in);
         String id = null;
         String fecha;
+        
         System.out.print("Dime el Nombre del Videojuego -> ");
         String nombre = sc.nextLine();
         System.out.print("Dime el Genero del Videojuego -> ");
@@ -94,39 +96,41 @@ public class VideoJuego {
         do {
             System.out.print("Dime la Fecha de Lanzamiento del Videojuego (Formato yyyy-mm-dd) -> ");
             fecha = sc.nextLine();
-        } while (!validarFecha(fecha));
+        } while (!validarFecha(fecha));//comprobar que la fecha sea valida
         Date fechaLanzamiento = Date.valueOf(fecha);
 
         System.out.print("Dime la Compañia del Videojuego -> ");
         String compañia = sc.nextLine();
 
-        boolean esValido = false;
-        float precio = 0.0f;
+        boolean esValido = false;//variable para comprobar que es un numero valida
+        float precio = 0.0f;//variable del numero con formato adecuado
 
         do {
             System.out.print("Dime el precio del Videojuego -> ");
 
-            if (sc.hasNextFloat()) {
+            if (sc.hasNextFloat()) {//comprueba que es un float y si no vuelve arriba hast que lo sea
                 precio = sc.nextFloat();
                 esValido = true;
             } else {
                 System.out.println("Ingresa un número válido. Gracias!");
-                sc.next();
+                sc.next();//limpia el buffer
             }
-        } while (!esValido);
+        } while (!esValido);//si es un float sale del bucle
 
+        //un objeto con todos los datos pasados por teclado
         VideoJuego videoJuego = new VideoJuego(null, nombre, genero, fechaLanzamiento, compañia, precio);
-        return videoJuego;
+        return videoJuego;//devolvemos un objeto con dichos datos
     }
 
+    //metodo booleano para saber si la fecha es valida
     private static boolean validarFecha(String fecha) {
-        boolean salida = true;
+        boolean salida = true;//variable para la salida para saber si es una fecha valida
         try {
-            Date fechaLanzamiento = Date.valueOf(fecha);
+            Date fechaLanzamiento = Date.valueOf(fecha);//creamos una variable del objeto date y si salta la excepcion
+                                                        //ya sabemos que no es una fecha valida
         } catch (IllegalArgumentException e) {
             salida = false;
         }
         return salida;
     }
-
-}//FIN CLASE
+}

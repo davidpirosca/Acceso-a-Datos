@@ -2,8 +2,8 @@ package conexionDB;
 
 public class DatosConexion {
 
+    private final String CLASSNAME = "com.mysql.cj.jdbc.Driver";
     private final String DB_URL = "jdbc:mysql://localhost:3306/jcvd";
-    private final String DB_URL_ORACLE = "jdbc:oracle:thin:@//localhost:3306/jcvd";
     private final String USER = "user";
     private final String PASS = "1234";
 
@@ -22,7 +22,7 @@ public class DatosConexion {
         return PASS;
     }
 
-    public String getDB_URL_ORACLE() {
-        return DB_URL_ORACLE;
+    public String getCLASSNAME() {
+        return CLASSNAME;
     }
 }

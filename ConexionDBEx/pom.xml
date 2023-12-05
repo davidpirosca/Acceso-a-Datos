@@ -9,18 +9,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>com.mycompany.conexiondbex.ConexionDBEx</exec.mainClass>
         <maven.compiler.release>21</maven.compiler.release>
+        <oracle.jdbc.version>19.6.0.0</oracle.jdbc.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.28</version>
+            <version>8.0.33</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${oracle.jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ucp</artifactId>
-            <version>23.3.0.23.09</version>
-        </dependency>    
+            <version>${oracle.jdbc.version}</version>
+        </dependency>
     </dependencies>
     <name>ConexionBDEx</name>
 </project>

@@ -48,11 +48,11 @@ public class ConexionDB {
 //            }
 //            System.out.println("================================================");
 //            System.out.println("================================================");
-//            System.out.println("NUEVO REGISTRO POR PARAMETRO");
-//            System.out.println("================================================");
-//            lanzaConsulta(QUERY, pds);
-//            System.out.println("================================================");
-//        System.out.println("NUEVO REGISTRO POR PARAMETRO");
+            System.out.println("NUEVO REGISTRO POR PARAMETRO");
+            System.out.println("================================================");
+            lanzaConsulta(QUERY, pds);
+            System.out.println("================================================");
+        System.out.println("NUEVO REGISTRO POR PARAMETRO");
 //        System.out.println("================================================");
 //        VideoJuego videoJuego = new VideoJuego(id, titulo, genero, fecha, compañia, precio);
 //        nuevoRegistro(videoJuego);
@@ -60,19 +60,19 @@ public class ConexionDB {
 //        System.out.println("================================================");
 //        System.out.println("NUEVO REGISTRO POR TECLADO");
 //        System.out.println("================================================");
-//        nuevoRegistro();
+//        nuevoRegistro(pds);
 //        System.out.println("================================================");
-            System.out.println("================================================");
-            System.out.println("ELIMINAR REGISTRO");
-            System.out.println("================================================");
-            String nombre = "Horizon";
-            System.out.println("Eliminar un Registro! -> " + nombre);
-            if (eliminarRegistro(nombre, pds)) {
-                System.out.println("Eliminado!");
-            } else {
-                System.out.println("No Eliminado!");
-            }
-            System.out.println("================================================");
+//            System.out.println("================================================");
+//            System.out.println("ELIMINAR REGISTRO");
+//            System.out.println("================================================");
+//            String nombre = "Horizon";
+//            System.out.println("Eliminar un Registro! -> " + nombre);
+//            if (eliminarRegistro(nombre, pds)) {
+//                System.out.println("Eliminado!");
+//            } else {
+//                System.out.println("No Eliminado!");
+//            }
+//            System.out.println("================================================");
 //
 //        System.out.println("================================================");
 //        System.out.println("PRUEBA CON UPDATE");
